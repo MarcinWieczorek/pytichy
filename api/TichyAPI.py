@@ -1,17 +1,15 @@
 import requests
 import bs4
 
-from api import Course
+from .Course import Course
 
 
 class TichyAPI:
     def __init__(self) -> None:
         self.session = requests.Session()
         self.BASE_URL = "https://tichy.umcs.lublin.pl"
-        print("Initialized TichyAPI")
 
     def login(self, username, password):
-        print("Logging in...")
         token = self.csrf_get(self.BASE_URL + "/accounts/login/")
         r = self.session.post(self.BASE_URL + "/accounts/login/", data={
             'username': username,
@@ -19,7 +17,6 @@ class TichyAPI:
             'csrfmiddlewaretoken': token,
             'next': '',
         })
-        print(r)
 
         return str(r.content).find("Witam") != -1
 
@@ -46,5 +43,4 @@ class TichyAPI:
         get = self.session.get(url)
         soup = bs4.BeautifulSoup(get.content, "html.parser")
         token = soup.find("input").attrs['value']
-        print("token:", token)
         return token
