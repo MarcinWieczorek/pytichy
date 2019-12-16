@@ -10,7 +10,7 @@ class TichyAPI:
         self.BASE_URL = "https://tichy.umcs.lublin.pl"
 
     def login(self, username, password):
-        token = self.csrf_get(self.BASE_URL + "/accounts/login/")
+        token = self.csrf_get("/accounts/login/")
         r = self.session.post(self.BASE_URL + "/accounts/login/", data={
             'username': username,
             'password': password,
@@ -40,7 +40,7 @@ class TichyAPI:
         return course_list
 
     def csrf_get(self, url):
-        get = self.session.get(url)
+        get = self.session.get(self.BASE_URL + url)
         soup = bs4.BeautifulSoup(get.content, "html.parser")
         token = soup.find("input").attrs['value']
         return token
