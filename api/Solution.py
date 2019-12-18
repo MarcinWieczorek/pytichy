@@ -1,3 +1,5 @@
+from typing import List
+
 import bs4
 import json
 
@@ -30,15 +32,16 @@ class Solution:
         self.exercise: Exercise = exercise
         self.uid = uid
         self.date = date
-        self.status = status
-        self.points = points
-        self.tests = []
+        self.status: str = status
+        self.points: float = points
+        self.tests: List[Solution.Test] = []
         self.tichy = self.exercise.course.tichy
 
     def __str__(self) -> str:
         return "{} - {}, {} points. ({})".format(self.date, self.status, self.points, self.uid)
 
     def fetch_data(self):
+        self.tests.clear()
         r = self.tichy.session.get("{}/solution/{}/{}/".format(self.tichy.BASE_URL, self.exercise.uid, self.uid))
         soup = bs4.BeautifulSoup(r.content, "html.parser")
 
@@ -50,9 +53,9 @@ class Solution:
                 index=tds[0].text,
                 status=tds[1].text.strip(),
                 test_size=tds[2].text.strip(),
-                time=tds[3].text.strip(),
-                time_limit=float(tds[4].text.strip()[:-2].replace(',', '.')),
-                memory=tds[5].text.strip(),
+                time=tds[3].text.strip().replace(' s', '').replace(',', '.'),
+                time_limit=float(tds[4].text[:-2].replace(',', '.').replace(' ', '')),
+                memory=tds[5].text.strip().replace(' kB', ''),
                 memory_limit=int(tds[6].text.strip()[:-3])
             ))
 

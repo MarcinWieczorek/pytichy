@@ -51,7 +51,7 @@ class Exercise:
                 uid=tds[1].find('a').attrs['href'][10:-1].split('/')[1],
                 date=tds[1].text.strip(),
                 status=tds[2].text.strip(),
-                points=tds[3].text.strip(),
+                points=float(tds[3].text.strip().replace(' points', '').replace(',', '.')),
             ))
 
         return solutions
